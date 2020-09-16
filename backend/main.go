@@ -9,7 +9,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func GoDotEnvVariable(key string) string {
+type ApplicationConfiguration struct {
+	Port string
+}
+
+func GoDotEnvVariable() ApplicationConfiguration {
 
 	// load .env file
 	err := godotenv.Load(".env")
@@ -18,7 +22,9 @@ func GoDotEnvVariable(key string) string {
 		log.Fatalf("Error loading .env file")
 	}
 
-	return os.Getenv(key)
+	return ApplicationConfiguration{
+		Port: os.Getenv("PORT"),
+	}
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
@@ -26,12 +32,18 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: homePage")
 }
 
-func HandleRequests() {
-	PORT := ":" + GoDotEnvVariable("PORT")
+// TODO: This is a test API for Flutter Integration, Temp.
+func FlutterInitRequest(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func HandleRequests(applicationConfig ApplicationConfiguration) {
+
 	http.HandleFunc("/", HomePage)
-	log.Fatal(http.ListenAndServe(PORT, nil))
+	log.Fatal(http.ListenAndServe(applicationConfig.Port, nil))
 }
 
 func main() {
-	HandleRequests()
+	applicationConfig := GoDotEnvVariable()
+	HandleRequests(applicationConfig)
 }
