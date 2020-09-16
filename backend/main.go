@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// ApplicationConfigure contains all the ENV variables that will be used within the backend
+// ApplicationConfiguration contains all the ENV variables that will be used within the backend
 type ApplicationConfiguration struct {
 	Port string
 }
@@ -35,8 +35,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: homePage")
 }
 
-//  FlutterInitRequest TODO: This is a test API for Flutter Integration, Temp.
-//  sends "Hello, World". Meta.
+// FlutterInitRequest TODO: This is a test API for Flutter Integration, Temp.sends "Hello, World". Meta.
 func FlutterInitRequest(w http.ResponseWriter, r *http.Request) {
 
 }
