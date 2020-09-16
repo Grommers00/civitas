@@ -9,10 +9,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// ApplicationConfigure contains all the ENV variables that will be used within the backend
 type ApplicationConfiguration struct {
 	Port string
 }
 
+// GoDotEnvVariable gets a list of all the variables into the handle requests
 func GoDotEnvVariable() ApplicationConfiguration {
 
 	// load .env file
@@ -27,16 +29,19 @@ func GoDotEnvVariable() ApplicationConfiguration {
 	}
 }
 
+//HomePage lets you get to the home page and notifies you with a println terminal.
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to the HomePage!")
 	fmt.Println("Endpoint Hit: homePage")
 }
 
-// TODO: This is a test API for Flutter Integration, Temp.
+//  FlutterInitRequest TODO: This is a test API for Flutter Integration, Temp.
+//  sends "Hello, World". Meta.
 func FlutterInitRequest(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//HandleRequests listens for any requests that come in.
 func HandleRequests(applicationConfig ApplicationConfiguration) {
 
 	http.HandleFunc("/", HomePage)
@@ -44,6 +49,6 @@ func HandleRequests(applicationConfig ApplicationConfiguration) {
 }
 
 func main() {
-	applicationConfig := GoDotEnvVariable()
+	applicationConfig := goDotEnvVariable()
 	HandleRequests(applicationConfig)
 }
