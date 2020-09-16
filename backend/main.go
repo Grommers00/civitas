@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func goDotEnvVariable(key string) string {
+func GoDotEnvVariable(key string) string {
 
 	// load .env file
 	err := godotenv.Load(".env")
@@ -21,17 +21,17 @@ func goDotEnvVariable(key string) string {
 	return os.Getenv(key)
 }
 
-func homePage(w http.ResponseWriter, r *http.Request) {
+func HomePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to the HomePage!")
 	fmt.Println("Endpoint Hit: homePage")
 }
 
-func handleRequests() {
-	PORT := ":" + goDotEnvVariable("PORT")
-	http.HandleFunc("/", homePage)
+func HandleRequests() {
+	PORT := ":" + GoDotEnvVariable("PORT")
+	http.HandleFunc("/", HomePage)
 	log.Fatal(http.ListenAndServe(PORT, nil))
 }
 
 func main() {
-	handleRequests()
+	HandleRequests()
 }
