@@ -1,2 +1,7 @@
+github.com/Grommers00/civitas v0.0.0-20200916012426-63eb6cf7e484 h1:MQf/7iTqHSuhglWc0NUp55W22nD4O9wFMKu4Lzvv5Jo=
+github.com/Grommers00/civitas/backend v0.0.0-20200916012426-63eb6cf7e484 h1:Z6jyQ8ZD2G5bK0KlMrubKfbIqA9DwRwFEXMHPs/WFtg=
+github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
+github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/grommers00/civitas/backend v0.0.0-20200916012426-63eb6cf7e484 h1:7Qkdt1Q0YaLQs5x8UhsWwSg8lz7lNeDsn97uk71+UqA=
 github.com/joho/godotenv v1.3.0 h1:Zjp+RcGpHhGlrMbJzXTrZZPrWj+1vfm90La1wgB6Bhc=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
