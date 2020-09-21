@@ -60,22 +60,21 @@ func GetAllNews(w http.ResponseWriter, r *http.Request) {
 func GetNewsByID(w http.ResponseWriter, r *http.Request) {
 	jsonFile, err := os.Open("mockdata/mocknews.json")
 	byteValue, _ := ioutil.ReadAll(jsonFile)
-	defer jsonFile.Close()
+	jsonFile.Close()
 	news := []models.News{}
 	json.Unmarshal([]byte(byteValue), &news)
 	if err != nil {
 		fmt.Println(err)
 	}
 	vars := mux.Vars(r)
-
 	id := vars["ID"]
 	aNews := models.News{}
+	// TODO: integrate DB for proper ID lookups
 	for i := range news {
 		if strconv.Itoa(news[i].ID) == id {
 			aNews = news[i]
 		}
 	}
-
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(aNews)
 }

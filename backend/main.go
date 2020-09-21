@@ -19,7 +19,6 @@ type ApplicationConfiguration struct {
 
 // GoDotEnvVariable gets a list of all the variables into the handle requests
 func GoDotEnvVariable() ApplicationConfiguration {
-
 	// load .env file
 	err := godotenv.Load(".env")
 
@@ -36,8 +35,6 @@ func GoDotEnvVariable() ApplicationConfiguration {
 func HandleRequests(applicationConfig ApplicationConfiguration) {
 	r := mux.NewRouter()
 	r = routes.ConnectNewsSubrouter(r)
-	// r.HandleFunc("/", FlutterInitRequest)
-
 	log.Fatal(http.ListenAndServe(applicationConfig.Port, r))
 }
 
