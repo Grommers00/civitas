@@ -1,4 +1,4 @@
-package civitas
+package models
 
 //Users will be for the users that will be using the ladder as a basic starting off point.
 type Users struct {

@@ -1,5 +1,8 @@
-module github.com/grommers00/civitas
+module github.com/grommers00/civitas/backend
 
 go 1.15
 
-require github.com/joho/godotenv v1.3.0
+require (
+	github.com/gorilla/mux v1.8.0
+	github.com/joho/godotenv v1.3.0
+)
