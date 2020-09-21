@@ -3,26 +3,29 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile/services/news.dart';
 import 'package:mobile/theme.dart';
-import 'package:mobile/api.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/views/news/card.dart';
+import 'package:mobile/views/news/details.dart';
+
+import 'components/drawer.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-Future<Message> fetchMessage() async {
-  final response = await http.get('http://localhost:3000/flutter');
+Future fetchNewsItems() async {
+  final response = await http.get('http://172.24.12.125:3000/news/');
 
   if (response.statusCode == 200) {
-    return Message.fromJson(json.decode(response.body));
-  } else {
-    throw Exception('Failed to load message');
+    List<NewsItem> news = (json.decode(response.body) as List)
+        .map((data) => NewsItem.fromJson(data))
+        .toList();
+
+    return news;
   }
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,69 +47,88 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<Message> futureMessage;
-
   @override
   void initState() {
     super.initState();
-    futureMessage = fetchMessage();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      drawer: Drawer(child: DrawerFactory(context)),
-      body: Center(
-          child: ListView.builder(
-              padding: const EdgeInsets.all(8.0),
-              itemCount: NewsMockData.length,
-              itemBuilder: (context, index) {
-                return NewsCard(NewsMockData[index]);
-              })),
-    );
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        drawer: Drawer(child: DrawerFactory(context)),
+        body: ListBuilder(context));
   }
 }
 
-Widget DrawerFactory(BuildContext context) {
-  return ListView(padding: EdgeInsets.zero, children: <Widget>[
-    DrawerHeader(
+Widget ListBuilder(BuildContext context) {
+  return FutureBuilder(
+      future: fetchNewsItems(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.none ||
+            !snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
 
-      child: FittedBox(
-          fit: BoxFit.fill,
-          child: Image.network('https://cdn.vox-cdn.com/thumbor/w4lhNFQz97ZHBZXZKjR1Z5_qQ8A=/0x0:400x225/1220x813/filters:focal(168x81:232x145):format(webp)/cdn.vox-cdn.com/uploads/chorus_image/image/67416047/1f9249103f371671071532e02e3ab39d2da49cbe_400x225.0.png')
-      ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
-      ),
-    ),
-    ListTile(
-      title: Text('News'),
-      leading: Icon(Icons.new_releases),
-      onTap: () {},
-    ),
-    ListTile(
-      title: Text('Profile'),
-      leading: Icon(Icons.account_circle),
-      onTap: () {},
-    ),
-    ListTile(
-      title: Text('Standings'),
-      leading: Icon(Icons.list),
-      onTap: () {},
-    ),
-    ListTile(
-      title: Text('Calendar'),
-      leading: Icon(Icons.calendar_today),
-      onTap: () {},
-    ),
-    ListTile(
-      title: Text('Upcoming Matches'),
-      leading: Icon(Icons.timelapse),
-
-      onTap: () {},
-    )
-  ]);
+        return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) {
+              return Column(children: [
+                Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    color: Theme.of(context).primaryColor,
+                    child: InkWell(
+                        splashColor:
+                            Theme.of(context).accentColor.withAlpha(30),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    NewsDetailPage(snapshot.data[index]))),
+                        child:
+                            Stack(alignment: Alignment.bottomRight, children: [
+                          Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(8.0),
+                                      topRight: Radius.circular(8.0))),
+                              clipBehavior: Clip.antiAlias,
+                              child: Image.network(snapshot.data[index].img)),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 165),
+                            child: Text(
+                              snapshot.data[index].date,
+                              style: TextStyle(
+                                color: Theme.of(context).accentColor,
+                                backgroundColor: Theme.of(context).primaryColor,
+                                fontSize: 15.0,
+                              ),
+                            ),
+                          ),
+                          Container(
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor),
+                              child: ListTile(
+                                title: Text(
+                                  snapshot.data[index].title,
+                                  style: TextStyle(
+                                      color: Theme.of(context).accentColor,
+                                      fontSize: 18),
+                                ),
+                                subtitle: Text(
+                                  "By ${snapshot.data[index].author}",
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .accentColor
+                                          .withAlpha(150)),
+                                ),
+                              ))
+                        ]))),
+              ]);
+            });
+      });
 }

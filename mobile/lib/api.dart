@@ -7,3 +7,4 @@ class Message {
     return Message(message: json['Message']);
   }
 }
+

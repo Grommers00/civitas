@@ -23,35 +23,30 @@ class NewsCard extends StatelessWidget {
                     builder: (context) => NewsDetailPage(newsItem))),
             child: Column(
               children: [
-                Stack(
-                    alignment: Alignment.topRight,
-                    children: [
-                      // Article Image
-                      Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(8.0),
-                                  topRight: Radius.circular(8.0))),
-                          clipBehavior: Clip.antiAlias,
-                          child: FittedBox(
-                              fit: BoxFit.fitWidth,
-                              child: Image.network(
-                                'https://airentertainment.biz/wp-content/uploads/2020/08/Among-Us-17_08_2020-20_02_24-1.png',
-                              ))),
-                      // Article Date
-                      Container(
-                        margin: EdgeInsets.only(top: 20, bottom: 20),
-                        child: Text(
-                          newsItem.date,
-                          style: TextStyle(
-                            color: Theme.of(context).accentColor,
-                            backgroundColor: Theme.of(context).primaryColor,
-                            fontSize: 15.0,
-
-                          ),
-                        ),
+                Stack(alignment: Alignment.topRight, children: [
+                  // Article Image
+                  Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8.0),
+                              topRight: Radius.circular(8.0))),
+                      clipBehavior: Clip.antiAlias,
+                      child: FittedBox(fit: BoxFit.fitWidth, child: Image.network(
+                          // 'https://airentertainment.biz/wp-content/uploads/2020/08/Among-Us-17_08_2020-20_02_24-1.png',
+                          newsItem.img))),
+                  // Article Date
+                  Container(
+                    margin: EdgeInsets.only(top: 20, bottom: 20),
+                    child: Text(
+                      newsItem.date,
+                      style: TextStyle(
+                        color: Theme.of(context).accentColor,
+                        backgroundColor: Theme.of(context).primaryColor,
+                        fontSize: 15.0,
                       ),
-                    ]),
+                    ),
+                  ),
+                ]),
                 // Article Title / Author
                 ListTile(
                   title: Text(

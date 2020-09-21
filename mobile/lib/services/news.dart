@@ -1,14 +1,21 @@
 class NewsItem {
   final String title;
-  final String description;
+  final String article;
   final String date;
   final String author;
+  final int id;
+  final String img;
 
-  NewsItem(this.title, this.date, this.author, this.description);
+  NewsItem(this.title, this.date, this.author, this.article, this.id, this.img);
+
+  factory NewsItem.fromJson(Map<String, dynamic> json) {
+    return NewsItem(
+      json['title'],
+      json['date'],
+      json['author'],
+      json['article'],
+      json['id'],
+      json['img'],
+    );
+  }
 }
-
-final NewsMockData = [
-  NewsItem('Grommers Takes Down Gato!', 'Aug 24, 2020', 'Recham', 'lmao'),
-  NewsItem('Ark Takes Down Gato!', 'Aug 25, 2020', 'Recham', 'lmao'),
-  NewsItem('Ark Takes Down Gato!', 'Aug 26, 2020', 'Recham', 'lmao')
-];
