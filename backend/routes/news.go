@@ -43,15 +43,19 @@ func AddNews(w http.ResponseWriter, r *http.Request) {
 
 // GetAllNews gets all the news articles
 func GetAllNews(w http.ResponseWriter, r *http.Request) {
-
+	// Reading from json file
 	jsonFile, err := os.Open("mockdata/mocknews.json")
 	byteValue, _ := ioutil.ReadAll(jsonFile)
-	defer jsonFile.Close()
+	jsonFile.Close()
+
+	// Creating news array with all the objects in the file
 	news := []models.News{}
 	json.Unmarshal([]byte(byteValue), &news)
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	// Sends the json object of a singular device
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(news)
 }
