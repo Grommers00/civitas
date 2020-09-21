@@ -1,6 +1,6 @@
 package models
 
-//Users will be for the users that will be using the ladder as a basic starting off point.
+//News will be for the articles that will be written regarding the league
 type News struct {
 	ID      int    `json:"ID"`
 	Author  string `json:"author"`

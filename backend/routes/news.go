@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// ConnectNewsSubrouter adds the different restFUL apis to the main router
 func ConnectNewsSubrouter(r *mux.Router) *mux.Router {
 	// "/news/"
 	f := r.PathPrefix("/news").Subrouter()
@@ -24,13 +25,13 @@ func ConnectNewsSubrouter(r *mux.Router) *mux.Router {
 	f.HandleFunc("/", GetAllNews).Methods("GET")
 
 	// "/news/{ID}"
-	f.HandleFunc("/{ID}", GetNewsById).Methods("GET")
+	f.HandleFunc("/{ID}", GetNewsByID).Methods("GET")
 
 	// "/news/{ID}"
-	f.HandleFunc("/{ID}", DeleteNewsById).Methods("DELETE")
+	f.HandleFunc("/{ID}", DeleteNewsByID).Methods("DELETE")
 
 	// "/news/{ID}"
-	f.HandleFunc("/{ID}", UpdateNewsById).Methods("PATCH")
+	f.HandleFunc("/{ID}", UpdateNewsByID).Methods("PATCH")
 
 	return f
 }
@@ -55,8 +56,8 @@ func GetAllNews(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(news)
 }
 
-// Gets a new article by ID
-func GetNewsById(w http.ResponseWriter, r *http.Request) {
+// GetNewsByID gets a new article by ID
+func GetNewsByID(w http.ResponseWriter, r *http.Request) {
 	jsonFile, err := os.Open("mockdata/mocknews.json")
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	defer jsonFile.Close()
@@ -71,7 +72,6 @@ func GetNewsById(w http.ResponseWriter, r *http.Request) {
 	aNews := models.News{}
 	for i := range news {
 		if strconv.Itoa(news[i].ID) == id {
-			fmt.Println("Do yiou get in this loop?")
 			aNews = news[i]
 		}
 	}
@@ -80,12 +80,12 @@ func GetNewsById(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(aNews)
 }
 
-// DeleteNewsById will delete an article by its ID
-func DeleteNewsById(w http.ResponseWriter, r *http.Request) {
+// DeleteNewsByID will delete an article by its ID
+func DeleteNewsByID(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("There!\n"))
 }
 
-// UpdateNewsById updates the news by id.
-func UpdateNewsById(w http.ResponseWriter, r *http.Request) {
+// UpdateNewsByID updates the news by id.
+func UpdateNewsByID(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Where!\n"))
 }
