@@ -58,23 +58,31 @@ func GetAllNews(w http.ResponseWriter, r *http.Request) {
 
 // GetNewsByID gets a new article by ID
 func GetNewsByID(w http.ResponseWriter, r *http.Request) {
+	// Reading from json file
 	jsonFile, err := os.Open("mockdata/mocknews.json")
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	jsonFile.Close()
+
+	//Creating news array with all the objects in the file
 	news := []models.News{}
 	json.Unmarshal([]byte(byteValue), &news)
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	//Gets the parameter and looks for the object in the array
 	vars := mux.Vars(r)
 	id := vars["ID"]
 	aNews := models.News{}
+
 	// TODO: integrate DB for proper ID lookups
 	for i := range news {
 		if strconv.Itoa(news[i].ID) == id {
 			aNews = news[i]
 		}
 	}
+
+	//
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(aNews)
 }
