@@ -2,6 +2,7 @@ package models
 
 import "github.com/gorilla/mux"
 
+// Application instance contains all runtime configurations and internal structures
 type Application struct {
 	Config ApplicationConfiguration
 	Router *mux.Router

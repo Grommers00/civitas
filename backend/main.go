@@ -27,7 +27,7 @@ func GoDotEnvVariable() models.ApplicationConfiguration {
 	}
 }
 
-//HandleRequests listens for any requests that come in.
+//ConstructRoutes generates the applications primary router, and subroutes
 func ConstructRoutes() *mux.Router {
 	r := mux.NewRouter()
 	routes.ConnectNewsSubrouter(r)
@@ -36,7 +36,8 @@ func ConstructRoutes() *mux.Router {
 	return r
 }
 
-func IntializeApplication() models.Application {
+// InitializeApplication creates the application instance
+func InitializeApplication() models.Application {
 	return models.Application{
 		Config: GoDotEnvVariable(),
 		Router: ConstructRoutes(),
@@ -44,6 +45,6 @@ func IntializeApplication() models.Application {
 }
 
 func main() {
-	application := IntializeApplication()
+	application := InitializeApplication()
 	log.Fatal(http.ListenAndServe(application.Config.Port, application.Router))
 }

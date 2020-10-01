@@ -1,6 +1,6 @@
 package models
 
-//Users will be for the users that will be using the ladder as a basic starting off point.
+//Profile will be for the users that will be using the ladder as a basic starting off point.
 type Profile struct {
 	ID     int    `json:"id"`
 	Title  string `json:"title"`

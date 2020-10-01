@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/grommers00/civitas/backend/internal"
@@ -42,7 +43,7 @@ func GetAllNews(w http.ResponseWriter, r *http.Request) {
 	err := internal.UnwrapJSONData("mockdata/mocknews.json", &news)
 
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error loading .env file")
 	}
 
 	// Sends the json object of a singular device

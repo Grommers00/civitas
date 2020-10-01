@@ -2,15 +2,15 @@ package routes
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
-
-	// "github.com/grommers00/civitas/backend/models"
 
 	"github.com/gorilla/mux"
 	"github.com/grommers00/civitas/backend/internal"
 	"github.com/grommers00/civitas/backend/models"
 )
 
+// ConnectProfileSubrouter creates the /profile subroutes
 func ConnectProfileSubrouter(r *mux.Router) {
 	// "/profile/"
 	f := r.PathPrefix("/profile").Subrouter()
@@ -37,7 +37,7 @@ func GetAllProfiles(w http.ResponseWriter, r *http.Request) {
 	err := internal.UnwrapJSONData("mockdata/mockprofiles.json", &profile)
 
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error loading .env file")
 	}
 
 	// Sends the json object of a singular device
