@@ -3,22 +3,18 @@ package main
 import (
 	"os"
 
-	"github.com/gorilla/mux"
-	"github.com/grommers00/civitas/backend/routes"
-
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/grommers00/civitas/backend/models"
+	"github.com/grommers00/civitas/backend/routes"
 
 	"github.com/joho/godotenv"
 )
 
-// ApplicationConfiguration contains all the ENV variables that will be used within the backend
-type ApplicationConfiguration struct {
-	Port string
-}
-
 // GoDotEnvVariable gets a list of all the variables into the handle requests
-func GoDotEnvVariable() ApplicationConfiguration {
+func GoDotEnvVariable() models.ApplicationConfiguration {
 	// load .env file
 	err := godotenv.Load(".env")
 
@@ -26,19 +22,28 @@ func GoDotEnvVariable() ApplicationConfiguration {
 		log.Fatalf("Error loading .env file")
 	}
 
-	return ApplicationConfiguration{
+	return models.ApplicationConfiguration{
 		Port: os.Getenv("PORT"),
 	}
 }
 
 //HandleRequests listens for any requests that come in.
-func HandleRequests(applicationConfig ApplicationConfiguration) {
+func ConstructRoutes() *mux.Router {
 	r := mux.NewRouter()
-	r = routes.ConnectNewsSubrouter(r)
-	log.Fatal(http.ListenAndServe(applicationConfig.Port, r))
+	routes.ConnectNewsSubrouter(r)
+	routes.ConnectProfileSubrouter(r)
+
+	return r
+}
+
+func IntializeApplication() models.Application {
+	return models.Application{
+		Config: GoDotEnvVariable(),
+		Router: ConstructRoutes(),
+	}
 }
 
 func main() {
-	applicationConfig := GoDotEnvVariable()
-	HandleRequests(applicationConfig)
+	application := IntializeApplication()
+	log.Fatal(http.ListenAndServe(application.Config.Port, application.Router))
 }
