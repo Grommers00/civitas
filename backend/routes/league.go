@@ -2,12 +2,11 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
+	"log"
 	"net/http"
-	"os"
 	"strconv"
 
+	"github.com/grommers00/civitas/backend/internal"
 	"github.com/grommers00/civitas/backend/models"
 
 	"github.com/gorilla/mux"
@@ -44,45 +43,38 @@ func AddLeagues(w http.ResponseWriter, r *http.Request) {
 // GetAllLeagues gets all the leagues articles
 func GetAllLeagues(w http.ResponseWriter, r *http.Request) {
 	// Reading from json file
-	jsonFile, err := os.Open("mockdata/mockleagues.json")
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	jsonFile.Close()
+	league := []models.League{}
+	err := internal.UnwrapJSONData("mockdata/mockleague.json", &league)
 
 	// Creating leagues array with all the objects in the file
-	leagues := []models.League{}
-	json.Unmarshal([]byte(byteValue), &leagues)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("Error loading .env file")
 	}
 
 	// Sends the json object of a singular device
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(leagues)
+	json.NewEncoder(w).Encode(league)
 }
 
 // GetLeaguesByID gets a new article by ID
 func GetLeaguesByID(w http.ResponseWriter, r *http.Request) {
 	// Reading from json file
-	jsonFile, err := os.Open("mockdata/mockleagues.json")
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	jsonFile.Close()
+	league := []models.League{}
+	err := internal.UnwrapJSONData("mockdata/mockleague.json", &league)
 
-	//Creating leagues array with all the objects in the file
-	leagues := []models.League{}
-	json.Unmarshal([]byte(byteValue), &leagues)
+	// Creating leagues array with all the objects in the file
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("Error loading .env file")
 	}
-
 	//Gets the parameter and looks for the object in the array
 	vars := mux.Vars(r)
 	id := vars["ID"]
 	aleagues := models.League{}
 
 	// TODO: integrate DB for proper ID lookups
-	for i := range leagues {
-		if strconv.Itoa(leagues[i].ID) == id {
-			aleagues = leagues[i]
+	for i := range league {
+		if strconv.Itoa(league[i].ID) == id {
+			aleagues = league[i]
 		}
 	}
 
