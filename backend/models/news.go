@@ -7,4 +7,5 @@ type News struct {
 	Title   string `json:"title"`
 	Article string `json:"article"`
 	Date    string `json:"date"`
+	Img     string `json:"img"`
 }
