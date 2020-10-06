@@ -2,19 +2,17 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
+	"log"
 	"net/http"
-	"os"
-	"strconv"
 
+	"github.com/grommers00/civitas/backend/internal"
 	"github.com/grommers00/civitas/backend/models"
 
 	"github.com/gorilla/mux"
 )
 
 // ConnectNewsSubrouter adds the different restFUL apis to the main router
-func ConnectNewsSubrouter(r *mux.Router) *mux.Router {
+func ConnectNewsSubrouter(r *mux.Router) {
 	// "/news/"
 	f := r.PathPrefix("/news").Subrouter()
 
@@ -32,27 +30,20 @@ func ConnectNewsSubrouter(r *mux.Router) *mux.Router {
 
 	// "/news/{ID}"
 	f.HandleFunc("/{ID}", UpdateNewsByID).Methods("PATCH")
-
-	return f
 }
 
 // AddNews will add a new article the list of articles
 func AddNews(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("News Added!\n"))
+	internal.NotImplementedHandler("AddNews", w)
 }
 
 // GetAllNews gets all the news articles
 func GetAllNews(w http.ResponseWriter, r *http.Request) {
-	// Reading from json file
-	jsonFile, err := os.Open("mockdata/mocknews.json")
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	jsonFile.Close()
-
-	// Creating news array with all the objects in the file
 	news := []models.News{}
-	json.Unmarshal([]byte(byteValue), &news)
+	err := internal.UnwrapJSONData("mockdata/mocknews.json", &news)
+
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("Error loading .env file")
 	}
 
 	// Sends the json object of a singular device
@@ -62,41 +53,15 @@ func GetAllNews(w http.ResponseWriter, r *http.Request) {
 
 // GetNewsByID gets a new article by ID
 func GetNewsByID(w http.ResponseWriter, r *http.Request) {
-	// Reading from json file
-	jsonFile, err := os.Open("mockdata/mocknews.json")
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	jsonFile.Close()
-
-	//Creating news array with all the objects in the file
-	news := []models.News{}
-	json.Unmarshal([]byte(byteValue), &news)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//Gets the parameter and looks for the object in the array
-	vars := mux.Vars(r)
-	id := vars["ID"]
-	aNews := models.News{}
-
-	// TODO: integrate DB for proper ID lookups
-	for i := range news {
-		if strconv.Itoa(news[i].ID) == id {
-			aNews = news[i]
-		}
-	}
-
-	//
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(aNews)
+	internal.NotImplementedHandler("GetNewsByID", w)
 }
 
 // DeleteNewsByID will delete an article by its ID
 func DeleteNewsByID(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("There!\n"))
+	internal.NotImplementedHandler("DeleteNewsByID", w)
 }
 
 // UpdateNewsByID updates the news by id.
 func UpdateNewsByID(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Where!\n"))
+	internal.NotImplementedHandler("UpdateNewsByID", w)
 }
