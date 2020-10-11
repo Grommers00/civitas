@@ -32,6 +32,7 @@ func ConstructRoutes() *mux.Router {
 	r := mux.NewRouter()
 	routes.ConnectNewsSubrouter(r)
 	routes.ConnectProfileSubrouter(r)
+	routes.ConnectLeaguesSubrouter(r)
 
 	return r
 }

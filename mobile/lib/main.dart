@@ -6,16 +6,19 @@ import 'package:mobile/theme.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/views/news/card.dart';
 import 'package:mobile/views/news/details.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'components/drawer.dart';
 
-void main() {
+Future main() async {
+  await DotEnv().load('.env');
   runApp(MyApp());
 }
 
 Future fetchNewsItems() async {
-  final response = await http.get('http://172.24.12.125:3000/news/');
-
+  String ip = DotEnv().env['IP'];
+  String port = DotEnv().env['PORT'];
+  final response = await http.get('http://' + ip + port + '/news/');
   if (response.statusCode == 200) {
     List<NewsItem> news = (json.decode(response.body) as List)
         .map((data) => NewsItem.fromJson(data))
