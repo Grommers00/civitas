@@ -12,7 +12,6 @@ import 'components/drawer.dart';
 
 Future main() async {
   await DotEnv().load('.env');
-
   runApp(MyApp());
 }
 
@@ -20,8 +19,6 @@ Future fetchNewsItems() async {
   String ip = DotEnv().env['IP'];
   String port = DotEnv().env['PORT'];
   final response = await http.get('http://' + ip + port + '/news/');
-  print("does this still work?");
-
   if (response.statusCode == 200) {
     List<NewsItem> news = (json.decode(response.body) as List)
         .map((data) => NewsItem.fromJson(data))
