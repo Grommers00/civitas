@@ -67,12 +67,12 @@ func GetLeaguesByID(w http.ResponseWriter, r *http.Request) {
 	}
 	//Gets the parameter and looks for the object in the array
 	vars := mux.Vars(r)
-	id := vars["id"]
+	id := vars["ID"]
 	aleagues := models.League{}
 
 	// TODO: integrate DB for proper ID lookups
 	for i := range league {
-		if strconv.Itoa(league[i].id) == id {
+		if strconv.Itoa(league[i].ID) == id {
 			aleagues = league[i]
 		}
 	}
