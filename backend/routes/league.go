@@ -13,7 +13,7 @@ import (
 )
 
 // ConnectLeaguesSubrouter adds the different restFUL apis to the main router
-func ConnectLeaguesSubrouter(r *mux.Router) *mux.Router {
+func ConnectLeaguesSubrouter(r *mux.Router) {
 	// "/leagues/"
 	f := r.PathPrefix("/leagues").Subrouter()
 
@@ -32,12 +32,11 @@ func ConnectLeaguesSubrouter(r *mux.Router) *mux.Router {
 	// "/leagues/{ID}"
 	f.HandleFunc("/{ID}", UpdateLeaguesByID).Methods("PATCH")
 
-	return f
 }
 
 // AddLeagues will add a new article the list of articles
 func AddLeagues(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("leagues Added!\n"))
+	internal.NotImplementedHandler("leagues Added!\n", w)
 }
 
 // GetAllLeagues gets all the leagues articles
@@ -85,10 +84,10 @@ func GetLeaguesByID(w http.ResponseWriter, r *http.Request) {
 
 // DeleteLeaguesByID will delete an article by its ID
 func DeleteLeaguesByID(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Deleted a league!\n"))
+	internal.NotImplementedHandler("Deleted League\n", w)
 }
 
 // UpdateLeaguesByID updates the leagues by id.
 func UpdateLeaguesByID(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Updated a league!\n"))
+	internal.NotImplementedHandler("Updated a league!\n", w)
 }
