@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/views/news/list.dart';
 import 'package:mobile/views/profile/details.dart';
 import 'package:mobile/views/schedule/details.dart';
+import 'package:mobile/views/seasons/list.dart';
 
 import '../views/profile/details.dart';
 import '../views/schedule/details.dart';
@@ -29,6 +30,10 @@ class TabNavigationItem {
           title: Text("Home"),
         ),
         TabNavigationItem(
+            page: SeasonsListPage(),
+            icon: Icon(Icons.list),
+            title: Text("Standings")),
+        TabNavigationItem(
           page: ProfilePage(),
           icon: Icon(Icons.people),
           title: Text("Profile"),
@@ -54,6 +59,7 @@ class _TabsPageState extends State<TabsPage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         onTap: (int index) => setState(() => _currentIndex = index),
         items: <BottomNavigationBarItem>[

@@ -7,7 +7,7 @@ import 'package:mobile/services/news.dart';
 import 'details.dart';
 
 Future fetchNewsItems() async {
-  final response = await http.get('http://192.168.166.72:3000/news/');
+  final response = await http.get('http://192.168.17.15:3000/news/');
 
   if (response.statusCode == 200) {
     List<NewsItem> news = (json.decode(response.body) as List)
