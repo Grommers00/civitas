@@ -16,7 +16,7 @@ func ConnectProfileSubrouter(r *mux.Router) {
 	f := r.PathPrefix("/profile").Subrouter()
 
 	// "/profile/"
-	f.HandleFunc("/", AddNews).Methods("POST")
+	f.HandleFunc("/", SaveProfile).Methods("POST")
 
 	// "/profile/"
 	f.HandleFunc("/", GetAllProfiles).Methods("GET")
@@ -53,7 +53,6 @@ func GetProfileByID(w http.ResponseWriter, r *http.Request) {
 // SaveProfile creates and commits new profle object via form submission
 func SaveProfile(w http.ResponseWriter, r *http.Request) {
 	internal.NotImplementedHandler("SaveProfile", w)
-
 }
 
 // DeleteProfileByID will delete a profile specified via /profile/{ID} route
