@@ -12,7 +12,7 @@ import (
 	"github.com/grommers00/civitas/backend/models"
 )
 
-// ConnectProfileSubrouter creates the /profile subroutes
+// ConnectStandingSubrouter creates the /standing subroutes
 func ConnectStandingSubrouter(r *mux.Router) {
 	// "/standing/"
 	f := r.PathPrefix("/standing").Subrouter()
@@ -22,10 +22,11 @@ func ConnectStandingSubrouter(r *mux.Router) {
 	f.HandleFunc("/", CreateStanding).Methods("POST")
 	f.HandleFunc("/{ID}", GetStandingByID).Methods("GET")
 	f.HandleFunc("/{ID}", UpdateStandingByID).Methods("PUT")
-	f.HandleFunc("/{ID}", DeleteStandngByID).Methods("DELETE")
+	f.HandleFunc("/{ID}", DeleteStandingByID).Methods("DELETE")
 
 }
 
+// GetAllStandings retreives all standings without filters
 func GetAllStandings(w http.ResponseWriter, r *http.Request) {
 	standings := []models.Standing{}
 
@@ -37,6 +38,7 @@ func GetAllStandings(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(standings)
 }
 
+// GetStandingByID retreives a standing based on supplied ID
 func GetStandingByID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(mux.Vars(r)["ID"])
 
@@ -74,22 +76,22 @@ func GetStandingByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(standingsFiltered)
 }
 
-// DeleteNewsByID will delete an article by its ID
-func DeleteStandngByID(w http.ResponseWriter, r *http.Request) {
+// DeleteStandingByID will delete an standing by its ID
+func DeleteStandingByID(w http.ResponseWriter, r *http.Request) {
 	internal.NotImplementedHandler("DeleteStandingByID", w)
 }
 
-// DeleteNewsByID will delete an article by its ID
-func GetStandngByID(w http.ResponseWriter, r *http.Request) {
-	internal.NotImplementedHandler("DeleteStandingByID", w)
+// GetStandingByID will delete an standing by its ID
+func GetStandingByID(w http.ResponseWriter, r *http.Request) {
+	internal.NotImplementedHandler("GetStandingByID", w)
 }
 
-// DeleteNewsByID will delete an article by its ID
+// CreateStanding will create a new standing object
 func CreateStanding(w http.ResponseWriter, r *http.Request) {
-	internal.NotImplementedHandler("DeleteStandingByID", w)
+	internal.NotImplementedHandler("CreateStanding", w)
 }
 
-// DeleteNewsByID will delete an article by its ID
+// UpdateStandingByID will update an standing by its ID
 func UpdateStandingByID(w http.ResponseWriter, r *http.Request) {
-	internal.NotImplementedHandler("DeleteStandingByID", w)
+	internal.NotImplementedHandler("UpdateStandingByID", w)
 }

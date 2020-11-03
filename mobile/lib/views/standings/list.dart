@@ -1,13 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/services/season.dart';
 import 'package:mobile/services/standing.dart';
 
 Future fetchNewsItems(int seasonId) async {
+  String ip = DotEnv().env['IP'];
+  String port = DotEnv().env['PORT'];
+
   final response =
-      await http.get('http://192.168.17.15:3000/standing/$seasonId');
+      await http.get("http://$ip$port/standing/$seasonId");
 
   if (response.statusCode == 200) {
     List<StandingItem> news = (json.decode(response.body) as List)

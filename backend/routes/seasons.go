@@ -10,7 +10,7 @@ import (
 	"github.com/grommers00/civitas/backend/models"
 )
 
-// ConnectProfileSubrouter creates the /profile subroutes
+// ConnectSeasonsRouter creates the /seasons subroutes
 func ConnectSeasonsRouter(r *mux.Router) {
 	// "/profile/"
 	f := r.PathPrefix("/seasons").Subrouter()
@@ -19,6 +19,7 @@ func ConnectSeasonsRouter(r *mux.Router) {
 	f.HandleFunc("/", GetAllSeasons).Methods("GET")
 }
 
+// GetAllSeasons retrieves all seasons without a filter
 func GetAllSeasons(w http.ResponseWriter, r *http.Request) {
 	standings := []models.Season{}
 
