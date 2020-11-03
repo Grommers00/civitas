@@ -3,8 +3,13 @@ import 'package:mobile/theme.dart';
 
 import 'components/drawer.dart';
 import 'components/tabs.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart'; 
 
-void main() => runApp(const MyApp());
+Future main() async {
+  await DotEnv().load('.env');
+  runApp(MyApp());
+}
+
 
 class MyApp extends StatefulWidget {
   const MyApp({Key key}) : super(key: key);

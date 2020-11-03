@@ -30,9 +30,12 @@ func GoDotEnvVariable() models.ApplicationConfiguration {
 //ConstructRoutes generates the applications primary router, and subroutes
 func ConstructRoutes() *mux.Router {
 	r := mux.NewRouter()
+
 	routes.ConnectNewsSubrouter(r)
 	routes.ConnectProfileSubrouter(r)
 	routes.ConnectLeaguesSubrouter(r)
+	routes.ConnectStandingSubrouter(r)
+	routes.ConnectSeasonsRouter(r)
 
 	return r
 }

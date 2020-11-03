@@ -1,13 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/services/news.dart';
 
 import 'details.dart';
 
 Future fetchNewsItems() async {
-  final response = await http.get('http://192.168.166.72:3000/news/');
+  String ip = DotEnv().env['IP'];
+  String port = DotEnv().env['PORT'];
+  
+  final response = await http.get("http://$ip$port/news/");
 
   if (response.statusCode == 200) {
     List<NewsItem> news = (json.decode(response.body) as List)
@@ -96,9 +100,7 @@ class NewsListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    
       body: ListBuilder(context),
-     
     );
   }
 }
