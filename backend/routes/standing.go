@@ -81,11 +81,6 @@ func DeleteStandingByID(w http.ResponseWriter, r *http.Request) {
 	internal.NotImplementedHandler("DeleteStandingByID", w)
 }
 
-// GetStandingByID will delete an standing by its ID
-func GetStandingByID(w http.ResponseWriter, r *http.Request) {
-	internal.NotImplementedHandler("GetStandingByID", w)
-}
-
 // CreateStanding will create a new standing object
 func CreateStanding(w http.ResponseWriter, r *http.Request) {
 	internal.NotImplementedHandler("CreateStanding", w)
