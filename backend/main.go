@@ -1,17 +1,22 @@
 package main
 
 import (
+	"context"
 	"os"
 
 	"log"
-	"net/http"
 
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/awslabs/aws-lambda-go-api-proxy/gorillamux"
 	"github.com/gorilla/mux"
 	"github.com/grommers00/civitas/backend/models"
 	"github.com/grommers00/civitas/backend/routes"
 
 	"github.com/joho/godotenv"
 )
+
+var muxLambda *gorillamux.GorillaMuxAdapter
 
 // GoDotEnvVariable gets a list of all the variables into the handle requests
 func GoDotEnvVariable() models.ApplicationConfiguration {
@@ -43,12 +48,20 @@ func ConstructRoutes() *mux.Router {
 // InitializeApplication creates the application instance
 func InitializeApplication() models.Application {
 	return models.Application{
-		Config: GoDotEnvVariable(),
+		// Config: GoDotEnvVariable(),
 		Router: ConstructRoutes(),
 	}
 }
 
 func main() {
 	application := InitializeApplication()
-	log.Fatal(http.ListenAndServe(application.Config.Port, application.Router))
+	muxLambda = gorillamux.New(application.Router)
+	// log.Fatal(http.ListenAndServe(application.Config.Port, application.Router))
+
+	lambda.Start(handler)
+}
+
+func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	// If no name is provided in the HTTP request body, throw an error
+	return muxLambda.ProxyWithContext(ctx, req)
 }
