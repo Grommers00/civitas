@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  civitas-backend
+
+  Civitas Application Backend
+
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: staging
+
+  ProfileHandler:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      CodeUri: functions/profile/
+      Handler: profile
+      Runtime: go1.x
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /profiles
+            Method: ANY
+            RestApiId:
+              Ref: ApiGatewayApi
+      
+  ProfileTable:
+    Type: AWS::Serverless::SimpleTable # DyanmoDB resource
+    Properties:
+      PrimaryKey:
+        Name: Id
+        Type: Number
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
