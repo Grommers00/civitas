@@ -26,6 +26,22 @@ Resources:
             Method: ANY
             RestApiId:
               Ref: ApiGatewayApi
+
+  MatchHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/match/
+      Handler: match
+      Runtime: go1.x
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /matches
+            Method: ANY
+            RestApiId:
+              Ref: ApiGatewayApi
       
   ProfileTable:
     Type: AWS::Serverless::SimpleTable # DyanmoDB resource
