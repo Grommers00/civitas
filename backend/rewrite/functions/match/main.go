@@ -78,7 +78,7 @@ func GetMatch(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.Dynamo
 	}
 
 	// Get list of profiles
-	result, err := db.FetchMatch(dynaClient)
+	result, err := db.FetchMatches(dynaClient)
 	if err != nil {
 		return apiResponse(http.StatusBadRequest, ErrorBody{
 			aws.String(err.Error()),

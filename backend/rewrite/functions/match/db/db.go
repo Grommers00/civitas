@@ -32,7 +32,6 @@ type Match struct {
 	Map       string `json:"map"`
 	Desc      string `json:"description"`
 	Season    int    `json:"season"`
-	Desc      string `json:"desc"`
 }
 
 func FetchMatch(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Match, error) {
@@ -59,7 +58,7 @@ func FetchMatch(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Match, error)
 	return item, nil
 }
 
-func FetchMatch(dynaClient dynamodbiface.DynamoDBAPI) (*[]Match, error) {
+func FetchMatches(dynaClient dynamodbiface.DynamoDBAPI) (*[]Match, error) {
 	input := &dynamodb.ScanInput{
 		TableName: aws.String(TableName),
 	}
@@ -121,7 +120,7 @@ func UpdateMatch(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.Dyn
 	}
 
 	// Save user
-	av, err := dynamodbattribute.MarshalMap(pf)
+	av, err := dynamodbattribute.MarshalMap(mt)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
