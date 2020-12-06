@@ -1,4 +1,4 @@
-module github.com/grommers00/civitas/standing
+module github.com/grommers00/civitas/winnerlist
 
 go 1.15
 

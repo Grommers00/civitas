@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
+	"github.com/google/uuid"
 )
 
 const (
@@ -25,7 +26,7 @@ const (
 )
 
 type Match struct {
-	ID        string `json:"id"`
+	ID        string `json:"id, omitempty"`
 	StartDate string `json:"startdate"`
 	EndDate   string `json:"enddate"`
 	Game      string `json:"game"`
@@ -38,7 +39,7 @@ func FetchMatch(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Match, error)
 	input := &dynamodb.GetItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
-				N: aws.String(id),
+				S: aws.String(id),
 			},
 		},
 		TableName: aws.String(TableName),
@@ -46,14 +47,14 @@ func FetchMatch(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Match, error)
 
 	result, err := dynaClient.GetItem(input)
 	if err != nil {
-		return nil, errors.New(ErrorFailedToFetchRecord)
+		return nil, err
 
 	}
 
 	item := new(Match)
 	err = dynamodbattribute.UnmarshalMap(result.Item, item)
 	if err != nil {
-		return nil, errors.New(ErrorFailedToUnmarshalRecord)
+		return nil, err
 	}
 	return item, nil
 }
@@ -80,11 +81,7 @@ func CreateMatch(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.Dyn
 		return nil, errors.New(ErrorInvalidMatchData)
 	}
 
-	// Check if user exists
-	currentMatch, _ := FetchMatch(mt.ID, dynaClient)
-	if currentMatch != nil && len(currentMatch.ID) != 0 {
-		return nil, errors.New(ErrorMatchAlreadyExists)
-	}
+	mt.ID = uuid.New().String()
 
 	// Save user
 	av, err := dynamodbattribute.MarshalMap(mt)

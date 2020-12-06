@@ -26,7 +26,6 @@ Resources:
             Method: ANY
             RestApiId:
               Ref: ApiGatewayApi
-      
 
   MatchHandler:
     Type: AWS::Serverless::Function
@@ -43,7 +42,7 @@ Resources:
             Method: ANY
             RestApiId:
               Ref: ApiGatewayApi
-      
+
   StandingHandler:
     Type: AWS::Serverless::Function
     Properties:
@@ -91,5 +90,34 @@ Resources:
             RestApiId:
               Ref: ApiGatewayApi
 
+  WinnerlistHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/winnerlist/
+      Handler: winnerlist
+      Runtime: go1.x
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /winnerlists
+            Method: ANY
+            RestApiId:
+              Ref: ApiGatewayApi
 
-              
+  DivisionHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/division/
+      Handler: division
+      Runtime: go1.x
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /division
+            Method: ANY
+            RestApiId:
+              Ref: ApiGatewayApi

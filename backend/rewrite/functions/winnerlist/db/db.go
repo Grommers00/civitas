@@ -16,23 +16,23 @@ import (
 const (
 	ErrorFailedToUnmarshalRecord = "failed to unmarshal record"
 	ErrorFailedToFetchRecord     = "failed to fetch record"
-	ErrorInvalidStandingData     = "invalid standing data"
+	ErrorInvalidWinnerListData   = "invalid winnerlist data"
 	ErrorInvalidEmail            = "invalid name"
 	ErrorCouldNotMarshalItem     = "could not marshal item"
 	ErrorCouldNotDeleteItem      = "could not delete item"
 	ErrorCouldNotDynamoPutItem   = "could not dynamo put item error"
-	ErrorStandingAlreadyExists   = "standing.Standing already exists"
-	ErrorStandingDoesNotExists   = "standing.Standing does not exist"
-	TableName                    = "civitas-standing"
+	ErrorWinnerListAlreadyExists = "winnerlist.WinnerList already exists"
+	ErrorWinnerListDoesNotExists = "winnerlist.WinnerList does not exist"
+	TableName                    = "civitas-winnerlist"
 )
 
-type Standing struct {
+type WinnerList struct {
 	ID   string `json:"id, omitempty"`
 	Name string `json:"name"`
 	Desc string `json:"desc"`
 }
 
-func FetchStanding(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Standing, error) {
+func FetchWinnerList(id string, dynaClient dynamodbiface.DynamoDBAPI) (*WinnerList, error) {
 	input := &dynamodb.GetItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
@@ -48,7 +48,7 @@ func FetchStanding(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Standing, 
 
 	}
 
-	item := new(Standing)
+	item := new(WinnerList)
 	err = dynamodbattribute.UnmarshalMap(result.Item, item)
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func FetchStanding(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Standing, 
 	return item, nil
 }
 
-func FetchStandings(dynaClient dynamodbiface.DynamoDBAPI) (*[]Standing, error) {
+func FetchWinnerLists(dynaClient dynamodbiface.DynamoDBAPI) (*[]WinnerList, error) {
 	input := &dynamodb.ScanInput{
 		TableName: aws.String(TableName),
 	}
@@ -64,24 +64,24 @@ func FetchStandings(dynaClient dynamodbiface.DynamoDBAPI) (*[]Standing, error) {
 	if err != nil {
 		return nil, errors.New(ErrorFailedToFetchRecord)
 	}
-	item := new([]Standing)
+	item := new([]WinnerList)
 	err = dynamodbattribute.UnmarshalListOfMaps(result.Items, item)
 	return item, nil
 }
 
-func CreateStanding(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) (
-	*Standing,
+func CreateWinnerList(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) (
+	*WinnerList,
 	error,
 ) {
-	var st Standing
-	if err := json.Unmarshal([]byte(req.Body), &st); err != nil {
-		return nil, errors.New(ErrorInvalidStandingData)
+	var wl WinnerList
+	if err := json.Unmarshal([]byte(req.Body), &wl); err != nil {
+		return nil, errors.New(ErrorInvalidWinnerListData)
 	}
 
-	st.ID = uuid.New().String()
+	wl.ID = uuid.New().String()
 
 	// Save user
-	av, err := dynamodbattribute.MarshalMap(st)
+	av, err := dynamodbattribute.MarshalMap(wl)
 	if err != nil {
 		return nil, errors.New(ErrorCouldNotMarshalItem)
 	}
@@ -95,26 +95,26 @@ func CreateStanding(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	return &st, nil
+	return &wl, nil
 }
 
-func UpdateStanding(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) (
-	*Standing,
+func UpdateWinnerList(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) (
+	*WinnerList,
 	error,
 ) {
-	var st Standing
-	if err := json.Unmarshal([]byte(req.Body), &st); err != nil {
+	var wl WinnerList
+	if err := json.Unmarshal([]byte(req.Body), &wl); err != nil {
 		return nil, errors.New(err.Error())
 	}
 
 	// Check if user exists
-	currentStanding, _ := FetchStanding(st.ID, dynaClient)
-	if currentStanding != nil && len(currentStanding.ID) == 0 {
-		return nil, errors.New(ErrorStandingDoesNotExists)
+	currentWinnerList, _ := FetchWinnerList(wl.ID, dynaClient)
+	if currentWinnerList != nil && len(currentWinnerList.ID) == 0 {
+		return nil, errors.New(ErrorWinnerListDoesNotExists)
 	}
 
 	// Save user
-	av, err := dynamodbattribute.MarshalMap(st)
+	av, err := dynamodbattribute.MarshalMap(wl)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
@@ -128,10 +128,10 @@ func UpdateStanding(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	return &st, nil
+	return &wl, nil
 }
 
-func DeleteStanding(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) error {
+func DeleteWinnerList(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) error {
 	id := req.QueryStringParameters["id"]
 	input := &dynamodb.DeleteItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
