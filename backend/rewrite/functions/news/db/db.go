@@ -14,24 +14,26 @@ import (
 const (
 	ErrorFailedToUnmarshalRecord = "failed to unmarshal record"
 	ErrorFailedToFetchRecord     = "failed to fetch record"
-	ErrorInvalidLeagueData       = "invalid League data"
+	ErrorInvalidNewsData         = "invalid News data"
 	ErrorInvalidEmail            = "invalid name"
 	ErrorCouldNotMarshalItem     = "could not marshal item"
 	ErrorCouldNotDeleteItem      = "could not delete item"
 	ErrorCouldNotDynamoPutItem   = "could not dynamo put item error"
-	ErrorLeagueAlreadyExists     = "league.League already exists"
-	ErrorLeagueDoesNotExists     = "league.League does not exist"
-	TableName                    = "civitas-leagues"
+	ErrorNewsAlreadyExists       = "news.News already exists"
+	ErrorNewsDoesNotExists       = "news.News does not exist"
+	TableName                    = "civitas-news"
 )
 
-type League struct {
+type News struct {
 	ID     string `json:"id"`
-	Name   string `json:"name"`
-	Season int    `json:"season"`
-	Game   string `json:"game"`
+	Date   string `json:"date"`
+	Title  string `json:"title"`
+	Author string `json:"author"`
+	Body   string `json:"description"`
+	Image  string `json:"image"`
 }
 
-func FetchLeague(id string, dynaClient dynamodbiface.DynamoDBAPI) (*League, error) {
+func FetchNews(id string, dynaClient dynamodbiface.DynamoDBAPI) (*News, error) {
 	input := &dynamodb.GetItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
@@ -47,7 +49,7 @@ func FetchLeague(id string, dynaClient dynamodbiface.DynamoDBAPI) (*League, erro
 
 	}
 
-	item := new(League)
+	item := new(News)
 	err = dynamodbattribute.UnmarshalMap(result.Item, item)
 	if err != nil {
 		return nil, errors.New(ErrorFailedToUnmarshalRecord)
@@ -55,7 +57,7 @@ func FetchLeague(id string, dynaClient dynamodbiface.DynamoDBAPI) (*League, erro
 	return item, nil
 }
 
-func FetchLeagues(dynaClient dynamodbiface.DynamoDBAPI) (*[]League, error) {
+func FetchNewsAll(dynaClient dynamodbiface.DynamoDBAPI) (*[]News, error) {
 	input := &dynamodb.ScanInput{
 		TableName: aws.String(TableName),
 	}
@@ -63,28 +65,28 @@ func FetchLeagues(dynaClient dynamodbiface.DynamoDBAPI) (*[]League, error) {
 	if err != nil {
 		return nil, errors.New(ErrorFailedToFetchRecord)
 	}
-	item := new([]League)
+	item := new([]News)
 	err = dynamodbattribute.UnmarshalListOfMaps(result.Items, item)
 	return item, nil
 }
 
-func CreateLeague(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) (
-	*League,
+func CreateNews(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) (
+	*News,
 	error,
 ) {
-	var lg League
-	if err := json.Unmarshal([]byte(req.Body), &lg); err != nil {
-		return nil, errors.New(ErrorInvalidLeagueData)
+	var nw News
+	if err := json.Unmarshal([]byte(req.Body), &nw); err != nil {
+		return nil, errors.New(ErrorInvalidNewsData)
 	}
 
 	// Check if user exists
-	currentLeague, _ := FetchLeague(lg.ID, dynaClient)
-	if currentLeague != nil && len(currentLeague.ID) != 0 {
-		return nil, errors.New(ErrorLeagueAlreadyExists)
+	currentNews, _ := FetchNews(nw.ID, dynaClient)
+	if currentNews != nil && len(currentNews.ID) != 0 {
+		return nil, errors.New(ErrorNewsAlreadyExists)
 	}
 
 	// Save user
-	av, err := dynamodbattribute.MarshalMap(lg)
+	av, err := dynamodbattribute.MarshalMap(nw)
 	if err != nil {
 		return nil, errors.New(ErrorCouldNotMarshalItem)
 	}
@@ -98,26 +100,26 @@ func CreateLeague(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.Dy
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	return &lg, nil
+	return &nw, nil
 }
 
-func UpdateLeague(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) (
-	*League,
+func UpdateNews(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) (
+	*News,
 	error,
 ) {
-	var lg League
-	if err := json.Unmarshal([]byte(req.Body), &lg); err != nil {
+	var nw News
+	if err := json.Unmarshal([]byte(req.Body), &nw); err != nil {
 		return nil, errors.New(err.Error())
 	}
 
 	// Check if user exists
-	currentLeague, _ := FetchLeague(lg.ID, dynaClient)
-	if currentLeague != nil && len(currentLeague.ID) == 0 {
-		return nil, errors.New(ErrorLeagueDoesNotExists)
+	currentNews, _ := FetchNews(nw.ID, dynaClient)
+	if currentNews != nil && len(currentNews.ID) == 0 {
+		return nil, errors.New(ErrorNewsDoesNotExists)
 	}
 
 	// Save user
-	av, err := dynamodbattribute.MarshalMap(lg)
+	av, err := dynamodbattribute.MarshalMap(nw)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
@@ -131,10 +133,10 @@ func UpdateLeague(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.Dy
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	return &lg, nil
+	return &nw, nil
 }
 
-func DeleteLeague(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) error {
+func DeleteNews(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) error {
 	id := req.QueryStringParameters["id"]
 	input := &dynamodb.DeleteItemInput{
 		Key: map[string]*dynamodb.AttributeValue{

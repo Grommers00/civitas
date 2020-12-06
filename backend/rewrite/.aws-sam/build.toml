@@ -22,4 +22,18 @@ source_md5 = ""
 packagetype = "Zip"
 functions = ["StandingHandler"]
 
+[function_build_definitions.25660a91-a1d5-4881-95d4-2ec938be62a3]
+codeuri = "functions/league/"
+runtime = "go1.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["LeagueHandler"]
+
+[function_build_definitions.c64ce036-f4b2-4c5b-9ec2-a61fccf0a6a2]
+codeuri = "functions/news/"
+runtime = "go1.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["NewsHandler"]
+
 [layer_build_definitions]

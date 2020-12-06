@@ -75,3 +75,21 @@ Resources:
             Method: ANY
             RestApiId:
               Ref: ApiGatewayApi
+  NewsHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/news/
+      Handler: news
+      Runtime: go1.x
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /news
+            Method: ANY
+            RestApiId:
+              Ref: ApiGatewayApi
+
+
+              

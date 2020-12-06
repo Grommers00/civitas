@@ -1,4 +1,4 @@
-module github.com/grommers00/civitas/league
+module github.com/grommers00/civitas/news
 
 go 1.15
 
