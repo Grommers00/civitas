@@ -59,3 +59,19 @@ Resources:
             Method: ANY
             RestApiId:
               Ref: ApiGatewayApi
+
+  LeagueHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/league/
+      Handler: league
+      Runtime: go1.x
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /leagues
+            Method: ANY
+            RestApiId:
+              Ref: ApiGatewayApi

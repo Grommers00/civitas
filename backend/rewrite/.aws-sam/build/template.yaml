@@ -40,12 +40,18 @@ Resources:
             Method: ANY
             RestApiId:
               Ref: ApiGatewayApi
-  ProfileTable:
-    Type: AWS::Serverless::SimpleTable
+  StandingHandler:
+    Type: AWS::Serverless::Function
     Properties:
-      PrimaryKey:
-        Name: Id
-        Type: Number
-      ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
+      CodeUri: StandingHandler
+      Handler: standing
+      Runtime: go1.x
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /standings
+            Method: ANY
+            RestApiId:
+              Ref: ApiGatewayApi

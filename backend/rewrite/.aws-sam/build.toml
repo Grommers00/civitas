@@ -15,4 +15,11 @@ source_md5 = ""
 packagetype = "Zip"
 functions = ["MatchHandler"]
 
+[function_build_definitions.6306c4f3-537d-4462-858d-72542a63f75e]
+codeuri = "functions/standing/"
+runtime = "go1.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["StandingHandler"]
+
 [layer_build_definitions]
