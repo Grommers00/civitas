@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/google/uuid"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -25,7 +27,7 @@ const (
 )
 
 type Profile struct {
-	ID   string `json:"id"`
+	ID   string `json:"id, omitempty"`
 	Name string `json:"name"`
 	Desc string `json:"desc"`
 }
@@ -34,7 +36,7 @@ func FetchProfile(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Profile, er
 	input := &dynamodb.GetItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
-				N: aws.String(id),
+				S: aws.String(id),
 			},
 		},
 		TableName: aws.String(TableName),
@@ -42,14 +44,14 @@ func FetchProfile(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Profile, er
 
 	result, err := dynaClient.GetItem(input)
 	if err != nil {
-		return nil, errors.New(ErrorFailedToFetchRecord)
+		return nil, err
 
 	}
 
 	item := new(Profile)
 	err = dynamodbattribute.UnmarshalMap(result.Item, item)
 	if err != nil {
-		return nil, errors.New(ErrorFailedToUnmarshalRecord)
+		return nil, err
 	}
 	return item, nil
 }
@@ -76,11 +78,7 @@ func CreateProfile(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.D
 		return nil, errors.New(ErrorInvalidProfileData)
 	}
 
-	// Check if user exists
-	currentProfile, _ := FetchProfile(pf.ID, dynaClient)
-	if currentProfile != nil && len(currentProfile.ID) != 0 {
-		return nil, errors.New(ErrorProfileAlreadyExists)
-	}
+	pf.ID = uuid.New().String()
 
 	// Save user
 	av, err := dynamodbattribute.MarshalMap(pf)

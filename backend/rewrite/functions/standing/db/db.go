@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/google/uuid"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -25,7 +27,7 @@ const (
 )
 
 type Standing struct {
-	ID   string `json:"id"`
+	ID   string `json:"id, omitempty"`
 	Name string `json:"name"`
 	Desc string `json:"desc"`
 }
@@ -34,7 +36,7 @@ func FetchStanding(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Standing, 
 	input := &dynamodb.GetItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
-				N: aws.String(id),
+				S: aws.String(id),
 			},
 		},
 		TableName: aws.String(TableName),
@@ -42,14 +44,14 @@ func FetchStanding(id string, dynaClient dynamodbiface.DynamoDBAPI) (*Standing, 
 
 	result, err := dynaClient.GetItem(input)
 	if err != nil {
-		return nil, errors.New(ErrorFailedToFetchRecord)
+		return nil, err
 
 	}
 
 	item := new(Standing)
 	err = dynamodbattribute.UnmarshalMap(result.Item, item)
 	if err != nil {
-		return nil, errors.New(ErrorFailedToUnmarshalRecord)
+		return nil, err
 	}
 	return item, nil
 }
@@ -71,19 +73,15 @@ func CreateStanding(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.
 	*Standing,
 	error,
 ) {
-	var pf Standing
-	if err := json.Unmarshal([]byte(req.Body), &pf); err != nil {
+	var st Standing
+	if err := json.Unmarshal([]byte(req.Body), &st); err != nil {
 		return nil, errors.New(ErrorInvalidStandingData)
 	}
 
-	// Check if user exists
-	currentStanding, _ := FetchStanding(pf.ID, dynaClient)
-	if currentStanding != nil && len(currentStanding.ID) != 0 {
-		return nil, errors.New(ErrorStandingAlreadyExists)
-	}
+	st.ID = uuid.New().String()
 
 	// Save user
-	av, err := dynamodbattribute.MarshalMap(pf)
+	av, err := dynamodbattribute.MarshalMap(st)
 	if err != nil {
 		return nil, errors.New(ErrorCouldNotMarshalItem)
 	}
@@ -97,26 +95,26 @@ func CreateStanding(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	return &pf, nil
+	return &st, nil
 }
 
 func UpdateStanding(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) (
 	*Standing,
 	error,
 ) {
-	var pf Standing
-	if err := json.Unmarshal([]byte(req.Body), &pf); err != nil {
+	var st Standing
+	if err := json.Unmarshal([]byte(req.Body), &st); err != nil {
 		return nil, errors.New(err.Error())
 	}
 
 	// Check if user exists
-	currentStanding, _ := FetchStanding(pf.ID, dynaClient)
+	currentStanding, _ := FetchStanding(st.ID, dynaClient)
 	if currentStanding != nil && len(currentStanding.ID) == 0 {
 		return nil, errors.New(ErrorStandingDoesNotExists)
 	}
 
 	// Save user
-	av, err := dynamodbattribute.MarshalMap(pf)
+	av, err := dynamodbattribute.MarshalMap(st)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
@@ -130,7 +128,7 @@ func UpdateStanding(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	return &pf, nil
+	return &st, nil
 }
 
 func DeleteStanding(req events.APIGatewayProxyRequest, dynaClient dynamodbiface.DynamoDBAPI) error {
