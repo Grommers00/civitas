@@ -43,6 +43,7 @@ Resources:
             RestApiId:
               Ref: ApiGatewayApi
       
+
   ProfileTable:
     Type: AWS::Serverless::SimpleTable # DyanmoDB resource
     Properties:

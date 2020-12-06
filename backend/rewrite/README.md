@@ -16,3 +16,7 @@
 
 **NOTE** Due to the current architecture of utilizing Lambdas, whereas this would be best as a REST API, we have to utilize a single endpoint per function handler.
 So, instead of `/profile/{ID}`, we're passing in a url param (ex. `/profile?id={ID}`) directly to the endpoint. This is prevelant on all endpoints.
+
+## References
+
+- https://medium.com/better-programming/how-to-deploy-a-local-serverless-application-with-aws-sam-b7b314c3048c
